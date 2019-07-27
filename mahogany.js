@@ -16,11 +16,34 @@ class Renderable {
     }
 }
 
+class Entity extends Renderable {
+    constructor(name, x = 0, y = 0) {
+        super();
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.sprite = null;
+    }
+
+    render(ctx) {
+        if(this.sprite) {
+            ctx.drawImage(this.sprite, this.x, this.y);
+        }
+    }
+}
+
+class Player extends Entity {
+    constructor(name, x = 0, y = 0) {
+        super(name, x, y);
+    }
+}
+
 class GameInstance extends Renderable {
     constructor() {
         super();
         this.background = null;
         this.objects = [];
+        this.party = [];
     }
 
     render(ctx) {
@@ -34,7 +57,13 @@ class GameInstance extends Renderable {
             object.render(ctx);
         }
     }
-};
+}
+
+const readImage = function (url) {
+    let img = document.createElement("img");
+    img.src = url;
+    return img;
+}
 
 window.addEventListener("load", function () {
     const game = document.getElementById("game");
@@ -46,8 +75,14 @@ window.addEventListener("load", function () {
     game.height = height;
 
     const instance = new GameInstance(ctx);
-    fetch("./map-01.png")
-        .then(img => { instance.background = img });
+    // fetch("./map-01.png")
+    //     .then(img => { instance.background = img });
+    instance.background = readImage("./map-01.png");
+
+    let player = new Player("john", 529, 279);
+    player.sprite = readImage("./player.png");
+
+    instance.objects.push(player);
 
     let render = function () {
         instance.render(ctx);
