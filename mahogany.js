@@ -112,7 +112,7 @@ class GameInstance extends Renderable {
 
     isValidCoordinate(x, y) {
         // read from walk map
-        let [r, g, b, a] = this.walkPixelAt(x, y)
+        let [r, g, b, a] = this.walkPixelAt(x, y);
         if(r == 255 && g == 255 && b == 255) {
             return true;
         }
@@ -175,7 +175,7 @@ window.addEventListener("load", function () {
     //     .then(img => { instance.background = img });
     instance.background = readImage("./map-01.png");
     readImage("./map-01-walk.png", function (img) {
-        // instance.setWalk(img);
+        instance.setWalk(img);
     });
 
     let player = new Player("john", 529, 279);
