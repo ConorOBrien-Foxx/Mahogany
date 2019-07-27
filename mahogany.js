@@ -80,7 +80,7 @@ class GameInstance extends Renderable {
             this.contactMapCtx.drawImage(this.walk, 0, 0);
         }
 
-        if(this.background) {
+        if(this.background && this.background.ready) {
             ctx.drawImage(this.background, 0, 0);
         }
 
@@ -113,7 +113,7 @@ class GameInstance extends Renderable {
     isValidCoordinate(x, y) {
         // read from walk map
         let [r, g, b, a] = this.walkPixelAt(x, y);
-        if(r == 255 && g == 255 && b == 255) {
+        if(r == 0 && g == 0 && b == 0) {
             return true;
         }
     }
@@ -151,14 +151,14 @@ class GameInstance extends Renderable {
 }
 
 const readImage = function (url, cb = null) {
-    let img = document.createElement("img");
-    img.onload = function () {
-        img.crossOrigin = "anonymous";
-        img.ready = true;
+    let img = new Image;
+
+    img.crossOrigin = "Anonymous";
+    img.addEventListener("load", function () {
         if(cb) {
             cb(img);
         }
-    }
+    }, false);
     img.src = url;
     return img;
 }
@@ -173,13 +173,18 @@ window.addEventListener("load", function () {
     const instance = new GameInstance(ctx);
     // fetch("./map-01.png")
     //     .then(img => { instance.background = img });
-    instance.background = readImage("./map-01.png");
+    readImage("./map-01.png", function (map) {
+        instance.background = map;
+    });
     readImage("./map-01-walk.png", function (img) {
         instance.setWalk(img);
     });
 
     let player = new Player("john", 529, 279);
-    player.sprite = readImage("./player.png");
+    readImage("./player.png", function (img) {
+        console.log(img);
+        player.sprite = img;
+    })
 
     instance.party.push(player);
 
